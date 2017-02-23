@@ -3,7 +3,7 @@ This is a project for a hackathon. Hackathon information can be found here: <br>
 http://shiftkeylabs.ca/calendar/shiftkey-py-hackathon/
 
 #Environment setting
-Download or clone the project to local
+Download or clone the project to local<br>
 1. Make sure the version of Python is 2.7
 2. run 'pip install -r requirements.txt' in cmd or Terminal
 
