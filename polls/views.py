@@ -1,20 +1,57 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
 
 from .models import Choice, Question
+from .forms import QueryClassifier
+import tweepy
+import time
 
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
-    def get_queryset(self):
+    def get_queryset(self, **kwargs):
         """Return the last five published questions."""
         return Question.objects.order_by('-pub_date')[:5]
 
+
+def IndexView2(request):
+    if request.method == 'GET':
+        form = QueryClassifier()
+        return render(request, 'polls/index.html', {
+            'form': form,
+        })
+
+
+def ResultClasifyView(request):
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = QueryClassifier(request.POST)
+        if form.is_valid():
+            account_id = form.cleaned_data['account_id']
+            consumer_key = "WTUo824SErjiT84KRM8UJuOhY"
+            consumer_secret = "9ozotiBZDHV303dkemYtcFGewlkxbAWCIPdgboFxm2LKHohv3s"
+            access_key = "439105569-gZvUdqOgwADaelGz7AaxZmhZLY2P3vMt9xlABe6B"
+            access_secret = "71CxfzUEkh9IivTxpzskj9nmoQhAvumhgVq05kdCT5vmm"
+
+            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+            auth.set_access_token(access_key, access_secret)
+            api = tweepy.API(auth)
+
+            try:
+                user_timeline = api.user_timeline(account_id, count=100)
+                return render(request, 'polls/resultclassifier.html', {'tweets': user_timeline})
+            except:
+                user_timeline = "broken"
+            return HttpResponse("You're looking at question1<br> %s" % (account_id))
+    return HttpResponse("You're looking at question2<br>")
+
+
+    # return HttpResponse("You're looking at question %s. <br> %s" % (user_id, string_tweets))
 
 class DetailView(generic.DetailView):
     model = Question
