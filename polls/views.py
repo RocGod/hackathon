@@ -33,9 +33,12 @@ def index_view(request):
             account_id = form.cleaned_data['account_id']
             tweet_classifier = TweetClassifier()
             result = tweet_classifier.classify_account(account_id)
+            personal_result = [r for r in result if r['label'] == 'personal']
+            business_result = [r for r in result if r['label'] == 'business']
             try:
                 return render(request, 'polls/index.html', {
-                    'tweets': result,
+                    'personal_tweets': personal_result,
+                    'business_tweets': business_result,
                     'form': form
                 })
             except:
