@@ -11,19 +11,56 @@
   </head>
   <body>
     <div class="container">
-      <h1>Clasify business vs. personal tweets!</h1>
+      <h1>Classify business vs. personal tweets!</h1>
 
-        <div class="col-md-6">
-        <form action="{% url 'polls:index' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="OK">
-        </form>
+        <div class="">
+            <form action="{% url 'polls:index' %}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="OK">
+            </form>
+        </div>
 
-        {% for tweet in tweets %}
-            <div class="tweet"> {{ tweet.text }} ==> {{ tweet.label }}</div><br>
-        {% endfor %}
-      
+
+        <div class="bs-example" data-example-id="collapse-accordion">
+            <div class="panel-group" role="tablist" id="accordion" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a href="#collapseOne" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                #Personal
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse collapse" role="tabpanel" id="collapseOne" aria-labelledby="headingOne" aria-expanded="false" style="height: 0px;">
+                        <div class="panel-body">
+                            {% for tweet in personal_tweets %}
+                                <div class="tweet"> {{ tweet.text }} ==> {{ tweet.label }}</div><br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a href="#collapseTwo" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapseTwo">
+                                #business
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="collapse panel-collapse" role="tabpanel" id="collapseTwo" aria-labelledby="headingTwo" aria-expanded="false">
+                        <div class="panel-body">
+                            {% for tweet in business_tweets %}
+                                <div class="tweet"> {{ tweet.text }} ==> {{ tweet.label }}</div><br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
   </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </html>
