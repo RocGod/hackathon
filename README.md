@@ -1,7 +1,6 @@
-# hackathon
-Hackathon-py
-
-Hackathon-py ShiftkeyLabs
+# Introduction
+This is a project for a hackathon. Hackathon information can be found here: <br>
+http://shiftkeylabs.ca/calendar/shiftkey-py-hackathon/
 
 #Environment setting
 1. Python that we are using is 2.7
