@@ -35,7 +35,7 @@
                     <div class="panel-collapse collapse" role="tabpanel" id="collapseOne" aria-labelledby="headingOne" aria-expanded="false" style="height: 0px;">
                         <div class="panel-body">
                             {% for tweet in personal_tweets %}
-                                <div class="tweet"> {{ tweet.text }} ==> {{ tweet.label }}</div><br>
+                                <div class="tweet"> {{ tweet.text }}</div><br>
                             {% endfor %}
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                     <div class="collapse panel-collapse" role="tabpanel" id="collapseTwo" aria-labelledby="headingTwo" aria-expanded="false">
                         <div class="panel-body">
                             {% for tweet in business_tweets %}
-                                <div class="tweet"> {{ tweet.text }} ==> {{ tweet.label }}</div><br>
+                                <div class="tweet"> {{ tweet.text }}</div><br>
                             {% endfor %}
                         </div>
                     </div>
