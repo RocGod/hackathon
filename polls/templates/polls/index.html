@@ -14,26 +14,15 @@
       <h1>Clasify business vs. personal tweets!</h1>
 
         <div class="col-md-6">
-        <form action="{% url 'polls:res' %}" method="post">
+        <form action="{% url 'polls:index' %}" method="post">
             {% csrf_token %}
-{#            <input type="text" id="account_id" name="account_id">#}
-{#            <button> Process... </button>#}
             {{ form.as_p }}
             <input type="submit" value="OK">
         </form>
 
-	<h2>Who do you think is the greatest Canadian?</h2>
-	{% if latest_question_list %}
-	<ul>
-	  {% for question in latest_question_list %}
-	  <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
-	  {% endfor %}
-	</ul>
-	{% else %}
-	<p>No polls are available.</p>
-	{% endif %}
-      </div>
-      
+        {% for tweet in tweets %}
+            <div class="tweet"> {{ tweet.text }} ==> {{ tweet.label }}</div><br>
+        {% endfor %}
       
     </div>
   </body>

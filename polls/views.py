@@ -8,6 +8,7 @@ from .models import Choice, Question
 from .forms import QueryClassifier
 import tweepy
 import time
+from classifier.TweetClassifier import TweetClassifier
 
 
 class IndexView(generic.ListView):
@@ -19,35 +20,41 @@ class IndexView(generic.ListView):
         return Question.objects.order_by('-pub_date')[:5]
 
 
-def IndexView2(request):
+def index_view(request):
+    form = QueryClassifier()
     if request.method == 'GET':
-        form = QueryClassifier()
         return render(request, 'polls/index.html', {
             'form': form,
         })
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = QueryClassifier(request.POST)
+        if form.is_valid():
+            account_id = form.cleaned_data['account_id']
+            tweet_classifier = TweetClassifier()
+            result = tweet_classifier.classify_account(account_id)
+            try:
+                return render(request, 'polls/index.html', {
+                    'tweets': result,
+                    'form': form
+                })
+            except:
+                print "error"
+
 
 
 def ResultClasifyView(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = QueryClassifier(request.POST)
-        if form.is_valid():
-            account_id = form.cleaned_data['account_id']
-            consumer_key = "WTUo824SErjiT84KRM8UJuOhY"
-            consumer_secret = "9ozotiBZDHV303dkemYtcFGewlkxbAWCIPdgboFxm2LKHohv3s"
-            access_key = "439105569-gZvUdqOgwADaelGz7AaxZmhZLY2P3vMt9xlABe6B"
-            access_secret = "71CxfzUEkh9IivTxpzskj9nmoQhAvumhgVq05kdCT5vmm"
-
-            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-            auth.set_access_token(access_key, access_secret)
-            api = tweepy.API(auth)
-
-            try:
-                user_timeline = api.user_timeline(account_id, count=100)
-                return render(request, 'polls/resultclassifier.html', {'tweets': user_timeline})
-            except:
-                user_timeline = "broken"
-            return HttpResponse("You're looking at question1<br> %s" % (account_id))
+        # if form.is_valid():
+        #     account_id = form.cleaned_data['account_id']
+        #     try:
+        #         user_timeline = api.user_timeline(account_id, count=100)
+        #         return render(request, 'polls/resultclassifier.html', {'tweets': user_timeline})
+        #     except:
+        #         user_timeline = "broken"
+        #     return HttpResponse("You're looking at question1<br> %s" % (account_id))
     return HttpResponse("You're looking at question2<br>")
 
 
