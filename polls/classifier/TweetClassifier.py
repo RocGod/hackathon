@@ -26,9 +26,10 @@ class TweetClassifier:
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_key, access_secret)
         self.api = tweepy.API(auth)
+        self.limit_tweets = 10
 
     def find_by_hash_tag(self, tag):
-        tweets = tweepy.Cursor(self.api.search, q='#{}'.format(tag)).items(200)
+        tweets = tweepy.Cursor(self.api.search, q='#{}'.format(tag)).items(self.limit_tweets)
         return [clean_tweet(tweet.text) for tweet in tweets if (tweet.lang == "en") and (not tweet.retweeted) and ('RT @' not in tweet.text)]
 
     def find_by_account(self, account):
@@ -40,8 +41,27 @@ class TweetClassifier:
         business_tweets = self.find_by_hash_tag("business")
         return label_data(personal_tweets, "personal") + label_data(business_tweets, "business")
 
+    def get_train_data_by_tags(self, tags):
+        train_data = []
+        for tag in tags:
+            train_data += label_data(self.find_by_hash_tag(tag), tag)
+        return train_data
+
     def get_test_data(self, account_id):
         return self.find_by_account(account_id)
+
+    def classify_account_tags(self, account_id, tags):
+        train_data = self.get_train_data_by_tags(tags)
+        test_data = self.get_test_data(account_id)
+        print "Training NB classifier...."
+        cl = NaiveBayesClassifier(train_data)
+        result = {}
+        for tag in tags:
+            result[tag] = []
+        for d in test_data:
+            label = cl.classify(d)
+            result[label].append(d)
+        return result
 
     def classify_account(self, account_id):
         train_data = self.get_train_data()

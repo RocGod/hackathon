@@ -8,6 +8,8 @@ from .models import Choice, Question
 from .forms import QueryClassifier
 import tweepy
 import time
+import json
+import random
 from classifier.TweetClassifier import TweetClassifier
 
 
@@ -31,14 +33,22 @@ def index_view(request):
         form = QueryClassifier(request.POST)
         if form.is_valid():
             account_id = form.cleaned_data['account_id']
+            tags = form.cleaned_data['tags'].split(",")
+            tags = [tag.strip() for tag in tags]
             tweet_classifier = TweetClassifier()
-            result = tweet_classifier.classify_account(account_id)
-            personal_result = [r for r in result if r['label'] == 'personal']
-            business_result = [r for r in result if r['label'] == 'business']
+            result = tweet_classifier.classify_account_tags(account_id, tags)
+            json_data = []
+            for tag, tweets in result.items():
+                r = lambda: random.randint(0, 255)
+                json_data.append({
+                    'label': tag,
+                    'value': len(tweets),
+                    'color': '#%02X%02X%02X' % (r(), r(), r())
+                })
             try:
                 return render(request, 'polls/index.html', {
-                    'personal_tweets': personal_result,
-                    'business_tweets': business_result,
+                    'result': result,
+                    'json_data': json.dumps(json_data),
                     'form': form
                 })
             except:
